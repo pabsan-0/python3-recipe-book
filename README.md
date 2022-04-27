@@ -11,8 +11,10 @@ A recipe book with handy python snippets.
 ### Time profiling
 Monitor the time it takes to run each line within a function. Instance, decorate, run and then print stats.
 ```
-from lineprofiler import lineprofiler
-lp = lineprofiler()
+$ pip3 install line-profiler
+
+from line_profiler import LineProfiler
+lp = LineProfiler()
 
 @lp
 def my_function():
