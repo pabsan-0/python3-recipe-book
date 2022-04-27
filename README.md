@@ -49,7 +49,7 @@ A recipe book with handy python snippets.
     ```
 
 ### Line tracing  
-    - Runs a script printing out which line is being executed at a time. The ignore dir part is so you only see lines in your code, not modules.
+- Runs a script printing out which line is being executed at a time. The ignore dir part is so you only see lines in your code, not modules.
     ```
     $ alias pytrace="python3 -m trace --ignore-dir=$(python3 -c 'import sys ; print(":".join(sys.path)[1:])') -t "
     $ pytrace myscript.py
