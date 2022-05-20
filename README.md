@@ -11,7 +11,7 @@ A recipe book with handy python snippets.
     ```  
     $ pip3 install line-profiler   
     ```  
-- Basic usage  
+- Basic usage: call script normally
     ```  
     from line_profiler import LineProfiler  
     lp = LineProfiler()  
@@ -22,7 +22,7 @@ A recipe book with handy python snippets.
   
     lp.print_stats()  
     ```  
-- Print report on each function call  
+- Print report on each function call, bit overkill
     ```  
     def lp_print_every_iter(function):
         """ LineProfiler results on function call rather than at the end """
@@ -37,6 +37,39 @@ A recipe book with handy python snippets.
     def my_function():
         pass
     ``` 
+    
+- More advanced usage: now is when it gets interesting
+
+    ```
+    # These you need for the profiling
+    import io
+    from line_profiler import LineProfiler
+    lp = LineProfiler()
+
+    # These are custom arbitrary modules
+    from . import Foo
+    from .bar import Bar
+
+    # Overwrite functions to monitor, even if they are module-deep
+    # This saves you decorating source code
+    Foo.mainloop = lp(Foo.mainloop)
+    Bar.snapshot = lp(Bar.snapshot)
+    Bar.__call__ = lp(Bar.__call__)
+
+    # Start the actual machinery (blocking call)
+    try:
+        node.start() 
+
+    # Store the profiler output to a file rather than stdout
+    except KeyboardInterrupt:
+        s = io.StringIO()
+        lp.print_stats(stream=s)
+        with open('time-profiler-results.txt', 'w+') as f:
+            f.write(s.getvalue())
+
+    ```
+
+
 ### Memory profiling  
 - Install profiler: `$ pip3 install memory-profiler`
 - Basic usage
