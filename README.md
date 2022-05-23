@@ -4,6 +4,77 @@ A recipe book with handy python snippets.
 ## Multiprocessing  
 #### Branched parallel  
 #### Real time  
+```
+import multiprocessing as mp
+from queue import PriorityQueue
+import time
+import queue    ## gets you Queue, Full, Empty
+
+
+def tasker1(arg, qin, qout):
+    # Setup: flush queue
+    while not qin.empty():
+        qin.get_nowait()
+
+    # Real-time mode: loop indefinitely
+    while 1:
+        a = qin.get()
+        a += arg
+        print("Tasker1:", a)
+        qout.put(a)
+        time.sleep(1)
+
+
+def tasker2(arg, qin, qout):
+    # Setup: flush queue
+    while not qin.empty():
+        qin.get_nowait()
+
+    # Real-time mode: loop indefinitely
+    while 1:
+        try:
+            a = qin.get_nowait(timeout=0.1)
+        except queue.Empty:
+            pass
+        else:
+            a -= arg
+            print("Tasker2:", a)
+            qout.put(a)
+            time.sleep(1)
+            
+
+class tasker3:
+    def __init__(self, qsignal):
+        mode = 0
+        while 1:
+            mode = qsignal.get()
+            if mode == 1:
+                a = self.subtask1()
+            else:
+                a = self.subtask2()
+            print(a)
+
+    @staticmethod
+    def subtask1():
+        return 1
+        
+    @staticmethod
+    def subtask2():
+        return 2
+
+if __name__ == '__main__':
+    q1 = mp.Queue()
+    q2 = mp.Queue()
+    qs = queue.Queue()
+
+    pTasker1 = mp.Process(target=tasker1, args=(1,q1,q2))
+    pTasker2 = mp.Process(target=tasker2, args=(1,q2,q1))
+    pTasker3 = mp.Process(target=tasker3, args=(qs,))
+
+    for process in [pTasker1, pTasker2, pTasker3]:
+        process.start()
+
+```
 
 ## Profiling and tracing  
 ### Time profiling   
