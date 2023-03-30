@@ -1,6 +1,32 @@
 # python3-recipes  
 A recipe book with handy python snippets.  
 
+## Obscure callback tricks 
+
+### Pass a callback that does not take arguments with arguments
+- Using a wrapper function
+```
+def wrapper(arg):  
+    def private_implementation_proxy():
+        print("here is your %d!" % arg)
+        return arg * 2 
+    return private_implementation_proxy
+   
+object.method_taking_no_args = wrapper(2)
+```
+
+- Use the __get__ method of a function
+```
+def my_callback(arg):
+    return 2*arg
+
+object.method_taking_no_args = my_callback.__get__(2)
+
+# "normal" function call 
+my_callback.__get__(2)()
+```
+
+
 ## Multiprocessing  
 #### Branched parallel  
 #### Real time  
